@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Meliora:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Meliora_jar</output-path>
+    <root id="archive" name="Meliora.jar">
+      <element id="module-output" name="Meliora" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/formdev/flatlaf/0.46/flatlaf-0.46.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

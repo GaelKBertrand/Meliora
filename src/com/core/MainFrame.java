@@ -16,6 +16,7 @@ public class MainFrame extends JFrame {
     private AboutPanel aboutPanel;
 
     public MainFrame() {
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(dimension);
         setExtendedState(MAXIMIZED_BOTH);
