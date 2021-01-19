@@ -8,5 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="com.formdev:flatlaf:0.46" level="project" />
+    <orderEntry type="library" name="org.junit.jupiter:junit-jupiter-engine:5.6.3" level="project" />
+    <orderEntry type="library" name="org.json:json:20201115" level="project" />
   </component>
 </module>

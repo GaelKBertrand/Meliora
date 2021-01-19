@@ -1,13 +1,16 @@
-package com.core;
+package com.core.desktop;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
 
-import static com.core.Gbc.*;
+import static com.core.desktop.Gbc.*;
 
 public class MainFrame extends JFrame {
     private NewScanPanel newScanPanel;
@@ -46,7 +49,7 @@ public class MainFrame extends JFrame {
         panel.add(settingsButton, Gbc.of(2, 0, 1, 1, Gbc.CENTER, 1f));
         panel.add(aboutButton, Gbc.of(3, 0, 1, 1, Gbc.CENTER, 1f));
 
-        add(panel, Gbc.of(0, 0, 1, 0.1, Gbc.CENTER));
+        add(panel, Gbc.of(0, 0, 1, 0.1, Gbc.NORTH, 10f));
 
 
     }
@@ -55,6 +58,25 @@ public class MainFrame extends JFrame {
         public NewScanPanel() {
             JButton newScanButton = new JButton("New Scan...");
             add(newScanButton, Gbc.of(0, 0, 1, 1, BOTH, CENTER));
+
+            newScanButton.addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setFileFilter(new FileNameExtensionFilter(
+                            "JPG image", "jpg"));
+                    int val = fileChooser.showOpenDialog(null);
+                    if (val == JFileChooser.APPROVE_OPTION) {
+                        try {
+                            BufferedImage image = ImageIO.read(fileChooser.getSelectedFile());
+                            //TODO kernel
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
+
+                    }
+                }
+            });
         }
     }
 

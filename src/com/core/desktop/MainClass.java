@@ -1,4 +1,4 @@
-package com.core;
+package com.core.desktop;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
