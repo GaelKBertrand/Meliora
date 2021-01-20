@@ -10,9 +10,7 @@ import java.util.Enumeration;
 public class MainClass {
     public static void main(String[] args) {
         setUpUI();
-        EventQueue.invokeLater(() -> {
-            MainFrame mainFrame = new MainFrame();
-        });
+        EventQueue.invokeLater(MainFrame::new);
     }
 
     private static void setUpUI() {

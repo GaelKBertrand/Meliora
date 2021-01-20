@@ -1,19 +1,38 @@
 package com.core.kernel;
 
-import org.json.JSONStringer;
+import org.json.JSONObject;
 
 public class ScanResult {
-    public String toJSON() {
-        JSONStringer stringer =
-                new JSONStringer();
-        stringer.object()
-                .key("res")
-                .value(12.0)
-                .endObject();
-        return stringer.toString();
+
+    private String fullName;
+    private double resADPercentage;
+
+    public ScanResult(String fullName, double resADPercentage) {
+        this.fullName = fullName;
+        this.resADPercentage = resADPercentage;
     }
 
-    public static ScanResult ofJSON(String json) {
-        return null;
+    //TODO implement this class
+    public JSONObject toJSON() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("fullName", fullName);
+        jsonObject.put("resADPercentage", resADPercentage);
+        return jsonObject;
+    }
+
+    //TODO make this after toJSON finished
+    public static ScanResult ofJSON(JSONObject jsonObject) {
+        String fullName = jsonObject.getString("fullName");
+        double resADPercentage = jsonObject.getDouble("resADPercentage");
+        ScanResult scanResult = new ScanResult(fullName, resADPercentage);
+        return scanResult;
+    }
+
+    @Override
+    public String toString() {
+        return "ScanResult{" +
+                "fullName='" + fullName + '\'' +
+                ", resADPercentage=" + resADPercentage +
+                '}';
     }
 }

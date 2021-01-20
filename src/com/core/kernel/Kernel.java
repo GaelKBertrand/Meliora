@@ -1,11 +1,16 @@
 package com.core.kernel;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.JSONWriter;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Kernel {
 
@@ -16,6 +21,7 @@ public class Kernel {
     }
 
     public static ScanResult analyzeScan(BufferedImage image) {
+        //TODO make analysis
         return null;
     }
 
@@ -38,10 +44,19 @@ public class Kernel {
 
         if (created) {
             try {
-                PrintWriter printWriter =
-                        new PrintWriter(new FileOutputStream(jsonFile, true));
+                Scanner s = new Scanner(new FileInputStream(jsonFile));
+                boolean hasNextLine = s.hasNextLine();
 
-                printWriter.println(scanResult.toJSON());
+                PrintWriter printWriter =
+                        new PrintWriter(new FileOutputStream(jsonFile, false));
+                JSONArray jsonArray;
+                if (hasNextLine) {
+                    jsonArray = new JSONArray(s.nextLine());
+                } else {
+                    jsonArray = new JSONArray();
+                }
+                jsonArray.put(scanResult.toJSON());
+                printWriter.print(jsonArray);
 
                 printWriter.flush();
             } catch (FileNotFoundException e) {
@@ -50,8 +65,39 @@ public class Kernel {
         }
     }
 
+    public static List<ScanResult> getSavedScans() {
+        ArrayList<ScanResult> scanResults = new ArrayList<>();
+        File jsonFile = new File(STORAGE_PATH + "\\scans.json");
+        if (jsonFile.isFile()) {
+            try {
+                Scanner s = new Scanner(new FileInputStream(jsonFile));
+                if (s.hasNextLine()) {
+                    JSONArray jsonArray = new JSONArray(s.nextLine());
+                    int num = jsonArray.length();
+                    for (int i = 0; i < num; i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        scanResults.add(ScanResult.ofJSON(jsonObject));
+                    }
+                    return scanResults;
+                } else {
+                    return null;
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
     @Test
     public void testSaveScan() {
-        saveScan(new ScanResult());
+        saveScan(new ScanResult("Test1 Test13", 12.0));
+    }
+
+    @Test
+    public void testGetSavedScans() {
+        System.out.println(getSavedScans());
     }
 }
