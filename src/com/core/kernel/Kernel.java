@@ -2,10 +2,9 @@ package com.core.kernel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.json.JSONWriter;
 import org.junit.jupiter.api.Test;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.Scanner;
 
 public class Kernel {
 
-    private static final String STORAGE_PATH;
+    public static final String STORAGE_PATH;
 
     static {
         STORAGE_PATH = System.getProperty("user.home") + "\\Appdata\\Local\\Meliora";
@@ -25,7 +24,7 @@ public class Kernel {
         return null;
     }
 
-    public static void saveScan(ScanResult scanResult) {
+    public static void saveScan(ScanResult scanResult) throws IOException {
         File dir = new File(STORAGE_PATH);
         dir.mkdir();
 
@@ -55,7 +54,7 @@ public class Kernel {
                 } else {
                     jsonArray = new JSONArray();
                 }
-                jsonArray.put(scanResult.toJSON());
+                jsonArray.put(scanResult.toJSONAndSaveImages());
                 printWriter.print(jsonArray);
 
                 printWriter.flush();
@@ -76,7 +75,7 @@ public class Kernel {
                     int num = jsonArray.length();
                     for (int i = 0; i < num; i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        scanResults.add(ScanResult.ofJSON(jsonObject));
+                        scanResults.add(ScanResult.ofJSONWithSavedImages(jsonObject));
                     }
                     return scanResults;
                 } else {
@@ -92,8 +91,12 @@ public class Kernel {
     }
 
     @Test
-    public void testSaveScan() {
-        saveScan(new ScanResult("Test1 Test13", 12.0));
+    public void testSaveScan() throws IOException {
+        BufferedImage image =
+                ImageIO.read(
+                        new File("C:\\Users\\Asus\\Pictures\\small-map-of-usa-with-states-and.jpg"));
+        saveScan(new ScanResult(
+                "Test1 Test13", image, image, 12.0));
     }
 
     @Test

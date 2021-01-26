@@ -6,10 +6,12 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.util.Enumeration;
+import java.util.Locale;
 
 public class MainClass {
     public static void main(String[] args) {
         setUpUI();
+        Locale.setDefault(Locale.US);
         EventQueue.invokeLater(MainFrame::new);
     }
 

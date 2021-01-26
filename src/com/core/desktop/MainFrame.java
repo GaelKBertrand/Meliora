@@ -38,8 +38,8 @@ public class MainFrame extends JFrame {
     }
 
     private void setUpPanelButtons() {
-        JButton newScanButton = new PanelButton("+", newScanPanel, List.of(historyPanel, settingsPanel, aboutPanel));
-        JButton historyButton = new PanelButton("H", historyPanel, List.of(newScanPanel, settingsPanel, aboutPanel));
+        JButton newScanButton = new PanelButton("Scan", newScanPanel, List.of(historyPanel, settingsPanel, aboutPanel));
+        JButton historyButton = new PanelButton("Hist", historyPanel, List.of(newScanPanel, settingsPanel, aboutPanel));
         JButton settingsButton = new PanelButton("Set", settingsPanel, List.of(newScanPanel, historyPanel, aboutPanel));
         JButton aboutButton = new PanelButton("Info", aboutPanel, List.of(newScanPanel, historyPanel, settingsPanel));
 
@@ -140,12 +140,14 @@ public class MainFrame extends JFrame {
                                 Gbc.of(0, 1, 1f, 1f));
                     }
                     for (JPanel jPanel : panelsToClose) {
-                        jPanel.setVisible(false);
+                        MainFrame.this.remove(jPanel);
                     }
                     MainFrame.this.repaint();
                     MainFrame.this.revalidate();
                 }
             });
+
+            setPreferredSize(new Dimension(100, 30));
         }
     }
 }
