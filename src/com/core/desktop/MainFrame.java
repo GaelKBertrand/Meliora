@@ -1,5 +1,8 @@
 package com.core.desktop;
 
+import com.core.kernel.Kernel;
+import com.core.kernel.ScanResult;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -39,8 +42,8 @@ public class MainFrame extends JFrame {
 
     private void setUpPanelButtons() {
         JButton newScanButton = new PanelButton("Scan", newScanPanel, List.of(historyPanel, settingsPanel, aboutPanel));
-        JButton historyButton = new PanelButton("Hist", historyPanel, List.of(newScanPanel, settingsPanel, aboutPanel));
-        JButton settingsButton = new PanelButton("Set", settingsPanel, List.of(newScanPanel, historyPanel, aboutPanel));
+        JButton historyButton = new PanelButton("History", historyPanel, List.of(newScanPanel, settingsPanel, aboutPanel));
+        JButton settingsButton = new PanelButton("Settings", settingsPanel, List.of(newScanPanel, historyPanel, aboutPanel));
         JButton aboutButton = new PanelButton("Info", aboutPanel, List.of(newScanPanel, historyPanel, settingsPanel));
 
         GbcPanel panel = new GbcPanel();
@@ -70,6 +73,14 @@ public class MainFrame extends JFrame {
                         try {
                             BufferedImage image = ImageIO.read(fileChooser.getSelectedFile());
                             //TODO kernel
+                            remove((newScanButton));
+                            add(new JLabel("Scanning..."), Gbc.of(0, 0, 1, 1, BOTH, CENTER));
+                            repaint();
+                            revalidate();
+                            new Thread(() -> {
+                                ScanResult result = Kernel.analyzeScan(image);
+                                showResults(result);
+                            }).start();
                         } catch (IOException exception) {
                             exception.printStackTrace();
                         }
@@ -77,6 +88,21 @@ public class MainFrame extends JFrame {
                     }
                 }
             });
+
+        }
+
+        private void showResults(ScanResult result) {
+            removeAll();
+            String output;
+            if (result == null) {
+                output = "Unimplemented/Error";
+            } else {
+                output = "<html>" + result.toString() + "</html>";
+            }
+            JLabel label = new JLabel(output);
+            add(label, Gbc.of(0, 0, 1, 1, BOTH, CENTER));
+            repaint();
+            revalidate();
         }
     }
 
@@ -95,7 +121,16 @@ public class MainFrame extends JFrame {
                     return false;
                 }
             };
-            model.addRow(new Object[]{0, "Test Person", 2024, 12, "No"});
+            List<ScanResult> savedScans = Kernel.getSavedScans();
+            for (int i = 0, savedScansSize = savedScans.size(); i < savedScansSize; i++) {
+                ScanResult scanResult = savedScans.get(i);
+                double adProbability = scanResult.getResADPercentage();
+
+                model.addRow(new Object[]{i + 1, scanResult.getFullName(),
+                        scanResult.getScanTime().toLocalDateTime(),
+                        (adProbability + "%"),
+                        "No"});
+            }
             JTable historyTable = new JTable(model);
             historyTable.getColumnModel().getColumn(0).setHeaderValue("#");
             historyTable.getColumnModel().getColumn(0).setMinWidth(50);

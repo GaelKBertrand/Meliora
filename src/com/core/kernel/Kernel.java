@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -19,9 +22,19 @@ public class Kernel {
         STORAGE_PATH = System.getProperty("user.home") + "\\Appdata\\Local\\Meliora";
     }
 
-    public static ScanResult analyzeScan(BufferedImage image) {
+    public static ScanResult analyzeScan(BufferedImage imageIn) {
         //TODO make analysis
-        return null;
+        BufferedImage image =
+                null;
+        try {
+            image = ImageIO.read(
+                    new File("C:\\Users\\Asus\\Pictures\\small-map-of-usa-with-states-and.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ScanResult(
+                "Test1 Test14", image, image,
+                12.0, LocalDateTime.now().atZone(ZoneId.systemDefault()));
     }
 
     public static void saveScan(ScanResult scanResult) throws IOException {
@@ -96,7 +109,7 @@ public class Kernel {
                 ImageIO.read(
                         new File("C:\\Users\\Asus\\Pictures\\small-map-of-usa-with-states-and.jpg"));
         saveScan(new ScanResult(
-                "Test1 Test13", image, image, 12.0));
+                "Test1 Test13", image, image, 12.0, ZonedDateTime.now()));
     }
 
     @Test

@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ScanResult {
@@ -16,13 +18,15 @@ public class ScanResult {
     private BufferedImage probabilityMap;
     private BufferedImage mccMap;
     private double resADPercentage;
+    private ZonedDateTime scanTime;
 
     public ScanResult(String fullName, BufferedImage probabilityMap,
-                      BufferedImage mccMap, double resADPercentage) {
+                      BufferedImage mccMap, double resADPercentage, ZonedDateTime scanTime) {
         this.fullName = fullName;
         this.probabilityMap = probabilityMap;
         this.mccMap = mccMap;
         this.resADPercentage = resADPercentage;
+        this.scanTime = scanTime;
     }
 
     //TODO implement this class
@@ -30,7 +34,7 @@ public class ScanResult {
         String imagesPath = Kernel.STORAGE_PATH + "\\Media";
         File dir = new File(imagesPath);
         dir.mkdir();
-        String time = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+        String time = scanTime.toLocalDateTime().toString();
         time = time.replace(':', '-');
         time = time.replace('.', '-');
         String probabilityMapPath = imagesPath + "\\" + trimFullName(fullName) + "_prob_" + time + ".jpg";
@@ -43,7 +47,7 @@ public class ScanResult {
         jsonObject.put("resADPercentage", resADPercentage);
         jsonObject.put("probabilityMapPath", Path.of(probabilityMapPath));
         jsonObject.put("mccMap", Path.of(mccMapPath));
-        jsonObject.put("time", time);
+        jsonObject.put("time", scanTime.toLocalDateTime().toString());
         return jsonObject;
     }
 
@@ -54,9 +58,11 @@ public class ScanResult {
         double resADPercentage = jsonObject.getDouble("resADPercentage");
         String probabilityMapPath = jsonObject.getString("probabilityMapPath");
         String mccMapPath = jsonObject.getString("mccMap");
+        String localDateTime = jsonObject.getString("time");
+        ZonedDateTime zonedDateTime = LocalDateTime.parse(localDateTime).atZone(ZoneId.systemDefault());
         BufferedImage probabilityMap = ImageIO.read(new File(probabilityMapPath));
         BufferedImage mccMap = ImageIO.read(new File(mccMapPath));
-        ScanResult scanResult = new ScanResult(fullName, probabilityMap, mccMap, resADPercentage);
+        ScanResult scanResult = new ScanResult(fullName, probabilityMap, mccMap, resADPercentage, zonedDateTime);
         return scanResult;
     }
 
@@ -89,6 +95,26 @@ public class ScanResult {
         return builder.toString();
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public BufferedImage getProbabilityMap() {
+        return probabilityMap;
+    }
+
+    public BufferedImage getMccMap() {
+        return mccMap;
+    }
+
+    public double getResADPercentage() {
+        return resADPercentage;
+    }
+
+    public ZonedDateTime getScanTime() {
+        return scanTime;
+    }
+
     @Override
     public String toString() {
         return "ScanResult{" +
@@ -96,6 +122,7 @@ public class ScanResult {
                 ", resADPercentage=" + resADPercentage +
                 ", probabilityMap=" + probabilityMap +
                 ", mccMap=" + mccMap +
+                ", scanTime=" + scanTime +
                 '}';
     }
 }
